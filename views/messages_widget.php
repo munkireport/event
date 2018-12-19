@@ -101,7 +101,7 @@ $(document).on('appUpdate', function(){
 			var parsedData = JSON.parse(item.data);
 			// Convert unix timestamp to relative time
 			parsedData.moment = moment(parsedData.timestamp * 1000).fromNow();
-			console.log(parsedData)
+			// console.log(parsedData)
 			msg = i18n.t(item.msg, parsedData);
 		}
 		
