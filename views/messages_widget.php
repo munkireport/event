@@ -27,7 +27,7 @@ $(document).on('appUpdate', function(){
 			success: 'fa-check-circle'
 		};
 	
-	$.getJSON( appUrl + '/module/event/get/60/all/all/50') // TODO make this configurable
+	$.getJSON( appUrl + '/module/event/get/50') // TODO make this configurable
 	.done(function( data ) {
 
 		if(data.error)

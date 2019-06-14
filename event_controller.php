@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Event module class
  *
@@ -8,6 +10,8 @@
  **/
 class Event_controller extends Module_controller
 {
+    private $conf;
+    
     public function __construct()
     {
         if (! $this->authorized()) {
@@ -19,11 +23,49 @@ class Event_controller extends Module_controller
 
             die();
         }
+        // Add local config
+        configAppendFile(__DIR__ . '/config.php', 'event');
+        
+        try {
+            $this->conf = Yaml::parseFile(conf('event')['config_path']);
+        } catch (\Exception $e) {
+           $this->conf = [];
+        }
     }
 
     public function index()
     {
         echo "You've loaded the Event module!";
+    }
+    
+    private function hasFilter()
+    {
+        return array_key_exists('filter', $this->conf) && 
+            is_array($this->conf['filter']);
+    }
+    
+    private function createFilter($filter)
+    {
+      $filterData = [
+        'sql' => '',
+        'values' => []
+      ];
+      foreach ($filter as $module => $types) {
+        $filterData['values'][] = $module;
+        $filterData['sql'] .= " AND NOT (module = ?";
+        if($types){
+          $inArray = [];
+          foreach ($types as $type) {
+            $filterData['values'][] = $type;
+            $inArray[] = '?';
+          }
+          $inString = implode(',', $inArray);
+          $filterData['sql'] .= " AND type IN ($inString)";
+        }
+        $filterData['sql'] .= ")";
+      }
+      
+      return $filterData;
     }
 
     /**
@@ -31,29 +73,37 @@ class Event_controller extends Module_controller
      *
      * @author AvB
      **/
-    public function get($minutes = 60, $type = 'all', $module = 'all', $limit = 0)
+    public function get($limit = 0)
     {
-        $queryobj = new Event_model();
         $queryobj = new Reportdata_model();
-        $fromtime = time() - 60 * $minutes;
         $limit = $limit ? sprintf('LIMIT %d', $limit) : '';
         $out['items'] = array();
         $out['error'] = '';
+        if($this->hasFilter()){
+          $filter = $this->createFilter($this->conf['filter']);
+        }else{
+          $filter = ['sql' => '','values' => []];
+        }
         $sql = "SELECT m.serial_number, module, type, msg, data, m.timestamp,
 					machine.computer_name
 				FROM event m 
 				LEFT JOIN reportdata USING (serial_number) 
 				LEFT JOIN machine USING (serial_number) 
-				WHERE m.timestamp > $fromtime 
-				".get_machine_group_filter('AND')."
+				".get_machine_group_filter('WHERE').$filter['sql']."
 				ORDER BY m.timestamp DESC
 				$limit";
+        
+        $stmt = $queryobj->prepare($sql);
+        $queryobj->execute($stmt, $filter['values']);
+
+      //  print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
 
 
-        foreach ($queryobj->query($sql) as $obj) {
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $obj) {
             $out['items'][] = $obj;
         }
-
+        
         $obj = new View();
         $obj->view('json', array('msg' => $out));
     }

@@ -18,3 +18,31 @@ Remarks
 * The content of the event table will be used to render events in a widget or send notifications
 
 There's no client component to this module, it should be invoked by other modules.
+
+### Configuration file:
+
+If you want to filter out certain modules or certain type of events within modules, you can use a YAML config file. The file is loaded by default from: 
+
+`local/module_configs/event.yml`
+
+You can override this file location by specifying the following variable:
+
+`EVENT_CONFIG_PATH=/path/to/wherever/config.yml`
+
+#### Example 1:
+```
+filter:
+    disk_report:
+```
+This will filter out all `disk_report` messages
+
+#### Example 2:
+```
+filter:
+    disk_report:
+    munkireport:
+      - warnings
+```
+This will also filter out all `munkireport` messages from the type `warnings`
+
+The available types for filtering are `danger`, `warning`, `success` and `info`.
