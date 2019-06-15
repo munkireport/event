@@ -43,6 +43,6 @@ filter:
     munkireport:
       - warnings
 ```
-This will also filter out all `munkireport` messages from the type `warnings`
+This will also filter out all `munkireport` messages of the type `warnings`
 
 The available types for filtering are `danger`, `warning`, `success` and `info`.
