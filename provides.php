@@ -1,7 +1,10 @@
 <?php
 
-return array(
-    'widgets' => array(
-        'messages' => array('view' => 'messages_widget'),
-    ),
-);
+return [
+  'widgets' => [
+      'messages' => ['view' => 'messages_widget'],
+  ],
+  'listings' => [
+      'event' => ['view' => 'event_listing', 'i18n' => 'event.event_plural'],
+  ],
+];
