@@ -16,11 +16,8 @@ class Event_model extends \Model
         parent::__construct('id', 'event'); //primary key, tablename
         $this->rs['id'] = '';
         $this->rs['serial_number'] = '';
-        $this->rt['serial_number'] = 'VARCHAR(30)';
         $this->rs['type'] = '';
-        $this->rt['type'] = 'VARCHAR(10)';
         $this->rs['module'] = '';
-        $this->rt['module'] = 'VARCHAR(20)';
         $this->rs['msg'] = '';
         $this->rs['data'] = '';
         $this->rs['timestamp'] = time();
