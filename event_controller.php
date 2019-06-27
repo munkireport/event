@@ -25,7 +25,8 @@ class Event_controller extends Module_controller
         }
         // Add local config
         configAppendFile(__DIR__ . '/config.php', 'event');
-        
+        $this->module_path = dirname(__FILE__) .'/';
+
         try {
             $this->conf = Yaml::parseFile(conf('event')['config_path']);
         } catch (\Exception $e) {
