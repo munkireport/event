@@ -25,11 +25,11 @@ $this->view('listings/default',
     ],
     [
       "column" => "event.type",
-      "i18n_header" => "message",
+      "i18n_header" => "type",
     ],
     [
       "column" => "event.module",
-      "i18n_header" => "message",
+      "i18n_header" => "module",
     ],
     [
       "column" => "event.msg",
