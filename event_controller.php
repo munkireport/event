@@ -76,7 +76,7 @@ class Event_controller extends Module_controller
      **/
     public function get($limit = 0)
     {
-        $queryobj = new Reportdata_model();
+        $queryobj = new \Model();
         $limit = $limit ? sprintf('LIMIT %d', $limit) : '';
         $out['items'] = array();
         $out['error'] = '';
