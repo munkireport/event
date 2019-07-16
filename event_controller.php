@@ -55,7 +55,7 @@ class Event_controller extends Module_controller
           }
           $query->where(function($query) use ($where){
             $query->where($where);
-          });
+          }, NULL, NULL, 'AND NOT'); // <- little hack to get NOT (Subquery)
         }
         else{
           $query->where('module', '<>', $module);
@@ -85,7 +85,7 @@ class Event_controller extends Module_controller
         if($this->hasFilter()){
           $this->createFilter($queryobj, $this->conf['filter']);
         }
-        echo vsprintf(str_replace(array('?'), array('\'%s\''), $queryobj->toSql()), $queryobj->getBindings());
+        // dumpQuery($queryobj);
         $obj = new View();
         $obj->view('json', [
           'msg' => [
