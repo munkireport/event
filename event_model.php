@@ -1,92 +1,19 @@
 <?php
 
-/**
- * Event class
- *
- * This is the central place to store events from
- * a client.
- *
- * @package munkireport
- * @author AvB
- **/
-class Event_model extends \Model
+use munkireport\models\MRModel as Eloquent;
+
+class Event_model extends Eloquent
 {
-    public function __construct($serial_number = '', $module = '')
-    {
-        parent::__construct('id', 'event'); //primary key, tablename
-        $this->rs['id'] = '';
-        $this->rs['serial_number'] = '';
-        $this->rs['type'] = '';
-        $this->rs['module'] = '';
-        $this->rs['msg'] = '';
-        $this->rs['data'] = '';
-        $this->rs['timestamp'] = time();
+    protected $table = 'event';
 
-        if ($serial_number && $module) {
-            if (! authorized_for_serial($serial_number)) {
-                return false;
-            }
+    protected $fillable = [
+        'serial_number',
+        'type',
+        'module',
+        'msg',
+        'data',
+        'timestamp',
+    ];
 
-            $this->retrieveOne('serial_number=? AND module=?', array($serial_number, $module));
-            $this->serial_number = $serial_number;
-            $this->module = $module;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Reset events
-     *
-     * @param string serial number
-     * @param string optional module
-     * @author
-     **/
-    public function reset($serial_number = '', $module = '')
-    {
-        if (! authorized_for_serial($serial_number)) {
-            return false;
-        }
-
-        $where_params = array($serial_number);
-        $where_string = ' WHERE serial_number=?';
-
-        if ($module) {
-            $where_params[] = $module;
-            $where_string .= ' AND module=?';
-        }
-
-        $sql = "DELETE FROM $this->tablename $where_string";
-        $stmt = $this->prepare($sql);
-
-        return $stmt->execute($where_params);
-    }
-
-    /**
-     * Store message
-     *
-     * Store a message
-     *
-     * @param string $type message type
-     * @param string $type message
-     **/
-    public function store($type, $msg, $data = '')
-    {
-        $this->type = $type;
-        $this->msg = $msg;
-        $this->data = $data;
-        $this->timestamp = time();
-        $this->save();
-    }
-
-    /**
-     * Add message
-     *
-     * @param string type
-     * @param string type
-     * @author AvB
-     **/
-    public function danger($module, $msg)
-    {
-    }
-} // END class
+    public $timestamps = false;
+}

@@ -45,28 +45,24 @@ class Event_controller extends Module_controller
             is_array($this->conf['filter']);
     }
     
-    private function createFilter($filter)
+    private function createFilter($query, $filter)
     {
-      $filterData = [
-        'sql' => '',
-        'values' => []
-      ];
       foreach ($filter as $module => $types) {
-        $filterData['values'][] = $module;
-        $filterData['sql'] .= " AND NOT (module = ?";
         if($types){
-          $inArray = [];
+          $where[] = ['module', $module];
           foreach ($types as $type) {
-            $filterData['values'][] = $type;
-            $inArray[] = '?';
+            $where[] = ['type', '<>', $type];
           }
-          $inString = implode(',', $inArray);
-          $filterData['sql'] .= " AND type IN ($inString)";
+          $query->where(function($query) use ($where){
+            $query->where($where);
+          });
         }
-        $filterData['sql'] .= ")";
+        else{
+          $query->where('module', '<>', $module);
+        }
       }
       
-      return $filterData;
+      return $query;
     }
 
     /**
@@ -76,36 +72,26 @@ class Event_controller extends Module_controller
      **/
     public function get($limit = 0)
     {
-        $queryobj = new \Model();
-        $limit = $limit ? sprintf('LIMIT %d', $limit) : '';
-        $out['items'] = array();
-        $out['error'] = '';
+        $queryobj = Event_model::select(
+                'event.serial_number', 'module', 'type', 'msg',
+                'event.timestamp', 'machine.computer_name'
+            )
+            ->join('machine', 'machine.serial_number', '=', 'event.serial_number') 
+            ->filter()
+            ->orderBy('event.timestamp', 'desc');
+        if($limit){
+            $queryobj->limit($limit);
+        }
         if($this->hasFilter()){
-          $filter = $this->createFilter($this->conf['filter']);
-        }else{
-          $filter = ['sql' => '','values' => []];
+          $this->createFilter($queryobj, $this->conf['filter']);
         }
-        $sql = "SELECT m.serial_number, module, type, msg, data, m.timestamp,
-					machine.computer_name
-				FROM event m 
-				LEFT JOIN reportdata USING (serial_number) 
-				LEFT JOIN machine USING (serial_number) 
-				".get_machine_group_filter('WHERE').$filter['sql']."
-				ORDER BY m.timestamp DESC
-				$limit";
-        
-        $stmt = $queryobj->prepare($sql);
-        $queryobj->execute($stmt, $filter['values']);
-
-      //  print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
-
-
-
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $obj) {
-            $out['items'][] = $obj;
-        }
-        
+        echo vsprintf(str_replace(array('?'), array('\'%s\''), $queryobj->toSql()), $queryobj->getBindings());
         $obj = new View();
-        $obj->view('json', array('msg' => $out));
+        $obj->view('json', [
+          'msg' => [
+            'error' => '', 
+            'items' => $queryobj->get()->toArray(),
+          ]
+        ]);
     }
 } // END class Event_controller
