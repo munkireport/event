@@ -73,7 +73,7 @@ class Event_controller extends Module_controller
     public function get($limit = 0)
     {
         $queryobj = Event_model::select(
-                'event.serial_number', 'module', 'type', 'msg',
+                'event.serial_number', 'module', 'type', 'msg', 'data',
                 'event.timestamp', 'machine.computer_name'
             )
             ->join('machine', 'machine.serial_number', '=', 'event.serial_number') 
