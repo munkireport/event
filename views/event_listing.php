@@ -39,6 +39,7 @@ $this->view('listings/default',
       "column" => "event.timestamp",
       "i18n_header" => "last_seen",
       "formatter" => "timestampToMoment",
+      "sort" => "desc",
     ],
   ]
 ]);
