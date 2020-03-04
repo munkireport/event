@@ -31,7 +31,7 @@ $(document).on('appUpdate', function(){
         update_time = function(){
             $( "time" ).each(function( index ) {
                 var date = new Date($(this).attr('datetime') * 1000);
-                $(this).html(moment(date).fromNow());
+                $(this).text(moment(date).fromNow());
             });
         },
         get_module_item  = function(item){
@@ -42,10 +42,21 @@ $(document).on('appUpdate', function(){
                 url = appUrl+'/clients/detail/'+item.serial_number+item.tab,
                 date = new Date(item.timestamp * 1000);
             
-            return '<a class="list-group-item" href="'+url+'">'+
-                    '<span class="pull-right" style="padding-left: 10px">'+moment(date).fromNow()+'</span>'+
-                    icon+item.computer_name+'<span class="hidden-xs"> | </span><br class="visible-xs-inline">'+
-                    item.module + ' '+item.msg+'</a>'
+            return $('<a class="list-group-item">')
+                        .attr('href', url)
+                        .append($('<span class="pull-right" style="padding-left: 10px">')
+                            .text(moment(date).fromNow())
+                            
+                        )
+                        .append(icon)
+                        .append($('<span>').text(item.computer_name))
+                        .append($('<span class="hidden-xs"> | </span>'))
+                        .append($('<br class="visible-xs-inline">'))
+                        .append($('<span>').text(item.module + ' '+item.msg))
+            // return '<a class="list-group-item" href="'+url+'">'+
+            //         '<span class="pull-right" style="padding-left: 10px">'++'</span>'+
+            //         icon+item.computer_name+'<span class="hidden-xs"> | </span><br class="visible-xs-inline">'+
+            //         item.module + ' '+item.msg+'</a>'
         };
 
     $.getJSON( appUrl + '/module/event/get/50') // TODO make this configurable
@@ -67,6 +78,8 @@ $(document).on('appUpdate', function(){
             for (var i = 0; i < arrayLength; i++) {
                 list.append(get_module_item(data.items[i]));
             }
+
+            console.log(list)
 
             update_time();
         }
