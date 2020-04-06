@@ -79,8 +79,6 @@ $(document).on('appUpdate', function(){
                 list.append(get_module_item(data.items[i]));
             }
 
-            console.log(list)
-
             update_time();
         }
         else
