@@ -6,6 +6,7 @@
 
             <h3 class="panel-title"><i class="fa fa-bullhorn"></i>
                 <span data-i18n="event_plural"></span>
+                <a href="/show/listing/event/event" class="btn btn-xs pull-right"><i class="fa fa-list"></i></a>
             </h3>
 
         </div>
