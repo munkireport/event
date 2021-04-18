@@ -1,21 +1,13 @@
 <div class="col-lg-8 col-md-6">
-
-    <div class="panel panel-default" id="events-widget">
-
-        <div class="panel-heading" data-container="body" data-i18n="[title]events.widget_title">
-
-            <h3 class="panel-title"><i class="fa fa-bullhorn"></i>
-                <span data-i18n="event_plural"></span>
-                <list-link data-url="/show/listing/event/event"></list-link>
-            </h3>
-
+    <div class="card" id="events-widget">
+        <div class="card-header" data-container="body" data-i18n="[title]events.widget_title">
+            <i class="fa fa-bullhorn"></i>
+            <span data-i18n="event_plural"></span>
+            <a href="/show/listing/event/event" class="pull-right"><i class="fa fa-list"></i></a>
         </div>
-
         <div class="list-group scroll-box" style="max-height: 308px"></div>
-
-    </div><!-- /panel -->
-
-</div><!-- /col -->
+    </div>
+</div>
 
 <script src="<?php echo url('module/event/js/format_event_data')?>"></script>
 
@@ -51,13 +43,9 @@ $(document).on('appUpdate', function(){
                         )
                         .append(icon)
                         .append($('<span>').text(item.computer_name))
-                        .append($('<span class="hidden-xs"> | </span>'))
-                        .append($('<br class="visible-xs-inline">'))
+                        .append($('<span class="d-sm-none d-md-inline"> | </span>'))
+                        .append($('<br class="d-none d-sm-block d-md-none">'))
                         .append($('<span>').text(item.module + ' '+item.msg))
-            // return '<a class="list-group-item" href="'+url+'">'+
-            //         '<span class="pull-right" style="padding-left: 10px">'++'</span>'+
-            //         icon+item.computer_name+'<span class="hidden-xs"> | </span><br class="visible-xs-inline">'+
-            //         item.module + ' '+item.msg+'</a>'
         };
 
     $.getJSON( appUrl + '/module/event/get/50') // TODO make this configurable
