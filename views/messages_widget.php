@@ -3,7 +3,7 @@
         <div class="card-header" data-container="body" data-i18n="[title]events.widget_title">
             <i class="fa fa-bullhorn"></i>
             <span data-i18n="event_plural"></span>
-            <a href="/show/listing/event/event" class="pull-right"><i class="fa fa-list"></i></a>
+            <a href="/show/listing/event/event" class="pull-right text-reset"><i class="fa fa-list"></i></a>
         </div>
         <div class="list-group scroll-box" style="max-height: 308px"></div>
     </div>
