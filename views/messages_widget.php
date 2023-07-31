@@ -3,7 +3,7 @@
         <div class="card-header" data-container="body" data-i18n="[title]events.widget_title">
             <i class="fa fa-bullhorn"></i>
             <span data-i18n="event_plural"></span>
-            <a href="/show/listing/event/event" class="pull-right text-reset"><i class="fa fa-list"></i></a>
+            <a href="/show/listing/event/event" class="pull-right"><i class="fa fa-list"></i></a>
         </div>
         <div class="list-group scroll-box" style="max-height: 308px"></div>
     </div>
@@ -35,7 +35,7 @@ $(document).on('appUpdate', function(){
                 url = appUrl+'/clients/detail/'+item.serial_number+item.tab,
                 date = new Date(item.timestamp * 1000);
             
-            return $('<a class="list-group-item">')
+            return $('<a class="list-group-item list-group-item-action">')
                         .attr('href', url)
                         .append($('<span class="pull-right" style="padding-left: 10px">')
                             .text(moment(date).fromNow())
@@ -79,7 +79,7 @@ $(document).on('appUpdate', function(){
     }).fail(function( jqxhr, textStatus, error ) {
         list.empty();
         var err = textStatus + ", " + error;
-        list.append('<span class="list-group-item list-group-item-danger">'+
+        list.append('<span class="list-group-item list-group-item-action list-group-item-danger">'+
             "Request Failed: " + err+'</span>')
     });
 });
