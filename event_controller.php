@@ -11,7 +11,7 @@ use Symfony\Component\Yaml\Yaml;
 class Event_controller extends Module_controller
 {
     private $conf;
-    
+
     public function __construct()
     {
         if (! $this->authorized()) {
@@ -38,13 +38,13 @@ class Event_controller extends Module_controller
     {
         echo "You've loaded the Event module!";
     }
-    
+
     private function hasFilter()
     {
         return array_key_exists('filter', $this->conf) && 
             is_array($this->conf['filter']);
     }
-    
+
     private function createFilter($query, $filter)
     {
       foreach ($filter as $module => $types) {
@@ -61,7 +61,7 @@ class Event_controller extends Module_controller
           $query->where('module', '<>', $module);
         }
       }
-      
+
       return $query;
     }
 
@@ -76,7 +76,11 @@ class Event_controller extends Module_controller
                 'event.serial_number', 'module', 'type', 'msg', 'data',
                 'event.timestamp', 'machine.computer_name'
             )
-            ->join('machine', 'machine.serial_number', '=', 'event.serial_number') 
+            ->join('machine', 'machine.serial_number', '=', 'event.serial_number')
+            ->orWhere('type', "danger")
+            ->orWhere('type', "info")
+            ->orWhere('type', "success")
+            ->orWhere('type', "warning")
             ->filter()
             ->orderBy('event.timestamp', 'desc');
         if($limit){
