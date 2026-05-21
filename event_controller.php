@@ -77,10 +77,7 @@ class Event_controller extends Module_controller
                 'event.timestamp', 'machine.computer_name'
             )
             ->join('machine', 'machine.serial_number', '=', 'event.serial_number')
-            ->orWhere('type', "danger")
-            ->orWhere('type', "info")
-            ->orWhere('type', "success")
-            ->orWhere('type', "warning")
+            ->whereIn('type', ["danger", "info", "success", "warning"])
             ->filter()
             ->orderBy('event.timestamp', 'desc');
         if($limit){
